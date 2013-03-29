@@ -52,7 +52,8 @@ fi
 echo -n "-----> Downloading Android SDK....."
 curl --silent --max-time 60 --location $ANDROID_SDK_URL | tar xz
 chmod +x $ANDROID_SDK_DIR/tools/android
-$ANDROID_SDK_DIR/tools/android update sdk --no-ui --filter 1, 3, 10  
+echo -n "-----> Fetching Android SDK components....."
+$ANDROID_SDK_DIR/tools/android update sdk --no-ui --filter 1,10  
 echo "done!"
 
 
