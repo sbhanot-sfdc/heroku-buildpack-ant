@@ -25,6 +25,8 @@ function indent() {
 
 VENDORING_DIR="$BUILD_DIR/.buildpack"
 ANT_DIR="$VENDORING_DIR/apache-ant-$ANT_VER"
+ANDROID_SDK_DIR="$VENDORING_DIR/android-sdk-linux"
+
 
 #create the cache dir if it doesn't exist
 mkdir -p $VENDORING_DIR
@@ -46,23 +48,32 @@ else
 fi
 
 
-if [ ! -f $BUILD_DIR/build.xml ] ; then
-	echo "Failed to build app with Apache Ant"
-fi
+# download Android SDK
+echo -n "-----> Downloading Android SDK....."
+curl --silent --max-time 60 --location $ANDROID_SDK_URL | tar xz
+chmod +x $ANDROID_SDK_DIR/tools/android
+$ANDROID_SDK_DIR/tools/android update sdk --no-ui --filter 1, 3, 10  
+echo "done!"
+
+
+
+#if [ ! -f $BUILD_DIR/build.xml ] ; then
+# echo "Failed to build app with Apache Ant"
+#fi
 
 
 # change to build dir to run ant
-cd $BUILD_DIR
+#cd $BUILD_DIR
 
-export ANT_OPTS="-Xmx512m"
+#export ANT_OPTS="-Xmx512m"
 
 # build app
-BUILDCMD="$ANT_DIR/bin/ant -Duser.home=$BUILD_DIR clean install"
-echo "-----> executing $BUILDCMD"
+#BUILDCMD="$ANT_DIR/bin/ant -Duser.home=$BUILD_DIR clean install"
+#echo "-----> executing $BUILDCMD"
 
-$BUILDCMD 2>&1 | indent
+#$BUILDCMD 2>&1 | indent
 
-if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-  echo " !     Failed to build app with Ant"
-  exit 1
-fi
+#if [ "${PIPESTATUS[*]}" != "0 0" ]; then
+  #echo " !     Failed to build app with Ant"
+  #exit 1
+#fi
